@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RTO Governance Suite — ASQA 2025</title>
+<meta name="description" content="Interactive compliance tool for FPPR obligations and Material Change notification under ASQA Standards for RTOs 2025.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Sora:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --navy:       #0B1F45;
+  --navy-mid:   #132B5E;
+  --navy-light: #1E3A7A;
+  --lime:       #C5DF3C;
+  --lime-light: #EEF7B0;
+  --red:        #E8341C;
+  --red-light:  #FEE9E5;
+  --amber:      #F5A623;
+  --amber-light:#FEF4E3;
+  --green:      #1DB560;
+  --green-light:#E3F9ED;
+  --white:      #FFFFFF;
+  --s50:        #F8FAFC;
+  --s100:       #F1F5F9;
+  --s200:       #E2E8F0;
+  --s300:       #CBD5E1;
+  --s400:       #94A3B8;
+  --s500:       #64748B;
+  --s700:       #334155;
+  --s900:       #0F172A;
+  --font-serif: 'DM Serif Display', serif;
+  --font-body:  'Sora', sans-serif;
+  --font-mono:  'IBM Plex Mono', monospace;
+  --radius-card: 20px;
+  --radius-btn:  14px;
+  --shadow-card: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(11,31,69,0.04);
+  --shadow-navy: 0 4px 16px rgba(11,31,69,0.28);
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  font-family:var(--font-body);
+  background:#E8EDF5;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ═══════════════════════════════════════
+   SHELL
+═══════════════════════════════════════ */
+.shell{
+  max-width:430px;
+  min-height:100vh;
+  margin:0 auto;
+  background:var(--s50);
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 0 60px rgba(11,31,69,0.18);
+}
+
+.scroll-area{
+  flex:1;
+  overflow-y:auto;
+  padding:0 0 96px;
+  scroll-behavior:smooth;
+}
+.scroll-area::-webkit-scrollbar{display:none;}
+
+.view-pad{padding:0 16px 16px;}
+
+/* ═══════════════════════════════════════
+   PANELS
+═══════════════════════════════════════ */
+.panel{display:none;}
+.panel.active{display:block;animation:fadeUp .3s ease both;}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(14px);}
+  to  {opacity:1;transform:translateY(0);}
+}
+
+/* ═══════════════════════════════════════
+   HEADER HERO
+═══════════════════════════════════════ */
+.hero{
+  background:var(--navy);
+  border-radius:0 0 28px 28px;
+  padding:20px 20px 26px;
+  margin-bottom:18px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(197,223,60,0.08);pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-40px;right:50px;
+  width:90px;height:90px;border-radius:50%;
+  background:rgba(197,223,60,0.05);pointer-events:none;
+}
+.hero-inner{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.hero-eyebrow{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--lime);margin-bottom:6px;}
+.hero-title{font-family:var(--font-serif);font-size:26px;color:white;line-height:1.15;margin-bottom:4px;}
+.hero-sub{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.45;font-weight:400;}
+.hero-icon{background:var(--lime);padding:10px;border-radius:14px;box-shadow:0 4px 16px rgba(197,223,60,0.4);flex-shrink:0;}
+.hero-icon svg{display:block;}
+
+.hero-back{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  color:rgba(255,255,255,0.55);background:rgba(255,255,255,0.1);
+  border:none;border-radius:10px;padding:6px 12px;cursor:pointer;
+  margin-bottom:14px;transition:background .2s;
+}
+.hero-back:hover{background:rgba(255,255,255,0.18);}
+
+/* ═══════════════════════════════════════
+   CARDS
+═══════════════════════════════════════ */
+.card{
+  background:var(--white);
+  border:1px solid var(--s200);
+  border-radius:var(--radius-card);
+  padding:18px;
+  margin-bottom:12px;
+  box-shadow:var(--shadow-card);
+}
+.card-lime  {border-left:4px solid var(--lime);}
+.card-navy  {background:var(--navy);border:none;color:white;}
+.card-red   {background:var(--red-light);border:1.5px solid rgba(232,52,28,0.3);}
+.card-amber {background:var(--amber-light);border:1.5px solid rgba(245,166,35,0.3);}
+.card-green {background:var(--green-light);border:1.5px solid rgba(29,181,96,0.3);}
+
+/* ═══════════════════════════════════════
+   TYPOGRAPHY UTILS
+═══════════════════════════════════════ */
+.serif {font-family:var(--font-serif);}
+.mono  {font-family:var(--font-mono);}
+
+.section-title{font-family:var(--font-serif);font-size:22px;color:var(--navy);line-height:1.2;margin-bottom:4px;}
+.section-sub  {font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--s400);margin-bottom:14px;}
+
+.label-mono{font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--s500);display:block;margin-bottom:6px;}
+
+/* ═══════════════════════════════════════
+   CHIPS
+═══════════════════════════════════════ */
+.chip{
+  display:inline-block;font-family:var(--font-mono);
+  font-size:9px;font-weight:600;letter-spacing:1.2px;
+  text-transform:uppercase;padding:3px 9px;border-radius:5px;
+}
+.chip-navy  {background:rgba(11,31,69,0.08);color:var(--navy);border:1px solid rgba(11,31,69,0.15);}
+.chip-lime  {background:var(--lime-light);color:#4A5E00;border:1px solid rgba(197,223,60,0.5);}
+.chip-red   {background:var(--red-light);color:var(--red);border:1px solid rgba(232,52,28,0.3);}
+.chip-amber {background:var(--amber-light);color:#8A5000;border:1px solid rgba(245,166,35,0.3);}
+.chip-green {background:var(--green-light);color:#0A7A3A;border:1px solid rgba(29,181,96,0.3);}
+.chip-medium{background:#FEFCE8;color:#7A6200;border:1px solid rgba(234,179,8,0.3);}
+
+/* ═══════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════ */
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  border:none;border-radius:var(--radius-btn);cursor:pointer;
+  font-family:var(--font-mono);font-size:11px;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;
+  transition:all .2s;width:100%;padding:14px 20px;
+}
+.btn-primary{background:var(--navy);color:white;box-shadow:var(--shadow-navy);}
+.btn-primary:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 6px 20px rgba(11,31,69,0.35);}
+.btn-primary:active{transform:translateY(0);}
+.btn-secondary{background:var(--s100);color:var(--s700);border:1px solid var(--s200);}
+.btn-secondary:hover{background:var(--s200);}
+
+/* ═══════════════════════════════════════
+   INPUTS
+═══════════════════════════════════════ */
+.field-input,.field-select{
+  width:100%;background:var(--s50);
+  border:1.5px solid var(--s200);border-radius:12px;
+  padding:11px 14px;font-family:var(--font-body);
+  font-size:13px;color:var(--s900);outline:none;
+  transition:border-color .2s;appearance:none;-webkit-appearance:none;
+}
+.field-input:focus,.field-select:focus{border-color:var(--navy);background:white;}
+.field-group{margin-bottom:12px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* ═══════════════════════════════════════
+   ALERTS
+═══════════════════════════════════════ */
+.alert{
+  border-radius:14px;padding:12px 14px;margin-bottom:12px;
+  font-size:12px;line-height:1.6;display:flex;gap:10px;align-items:flex-start;
+}
+.alert svg{flex-shrink:0;margin-top:1px;}
+.alert-danger {background:var(--red-light);  border:1.5px solid rgba(232,52,28,0.35);color:#6B1B0E;}
+.alert-warning{background:var(--amber-light);border:1.5px solid rgba(245,166,35,0.4);color:#7A4500;}
+.alert-info   {background:rgba(11,31,69,0.05);border:1.5px solid rgba(11,31,69,0.15);color:var(--navy);}
+.alert-green  {background:var(--green-light);border:1.5px solid rgba(29,181,96,0.35);color:#0A5A2A;}
+
+/* ═══════════════════════════════════════
+   STAT PILLS
+═══════════════════════════════════════ */
+.stats-row{display:flex;gap:8px;margin-bottom:14px;}
+.stat-pill{
+  background:var(--white);border:1px solid var(--s200);
+  border-radius:14px;padding:12px 14px;text-align:center;flex:1;
+  box-shadow:var(--shadow-card);
+}
+.stat-num{font-family:var(--font-serif);font-size:30px;color:var(--navy);line-height:1;display:block;}
+.stat-lbl{font-family:var(--font-mono);font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--s400);display:block;margin-top:2px;}
+
+/* ═══════════════════════════════════════
+   SCORE
+═══════════════════════════════════════ */
+.score-big{font-family:var(--font-serif);font-size:54px;line-height:1;}
+.prog-track{height:6px;background:var(--s200);border-radius:3px;overflow:hidden;margin-top:8px;}
+.prog-fill {height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);background:linear-gradient(90deg,var(--navy),var(--lime));}
+
+/* ═══════════════════════════════════════
+   CHECKLIST ITEMS
+═══════════════════════════════════════ */
+.checklist-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:13px 14px;border-radius:14px;
+  border:1.5px solid var(--s200);background:white;
+  cursor:pointer;transition:all .2s;margin-bottom:8px;
+}
+.checklist-item:hover{border-color:var(--navy);background:var(--s50);}
+.checklist-item.done {border-color:var(--green);background:var(--green-light);}
+.check-box-ui{
+  width:20px;height:20px;border-radius:6px;
+  border:2px solid var(--s300);flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;font-size:11px;font-weight:700;
+}
+.done .check-box-ui{background:var(--green);border-color:var(--green);color:white;}
+.item-text{flex:1;}
+.item-title{font-size:12px;font-weight:600;color:var(--s700);line-height:1.45;}
+.item-tags{margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;}
+
+/* ═══════════════════════════════════════
+   TIMELINE ITEMS
+═══════════════════════════════════════ */
+.tl-item{
+  display:flex;gap:14px;padding:14px;
+  border-radius:14px;background:var(--s50);
+  border:1px solid var(--s200);margin-bottom:10px;
+  cursor:pointer;transition:all .2s;
+}
+.tl-item:hover{border-color:var(--navy);background:white;}
+.tl-letter{font-family:var(--font-serif);font-size:24px;color:var(--navy);line-height:1;min-width:22px;}
+.tl-content{flex:1;}
+.tl-title{font-size:13px;font-weight:700;color:var(--s900);margin-bottom:4px;}
+.tl-desc{font-size:11px;color:var(--s500);line-height:1.55;display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--s100);}
+.tl-item.open .tl-desc{display:block;}
+.tl-chevron{flex-shrink:0;transition:transform .2s;color:var(--s300);}
+.tl-item.open .tl-chevron{transform:rotate(90deg);color:var(--navy);}
+
+/* ═══════════════════════════════════════
+   RISK ITEMS
+═══════════════════════════════════════ */
+.risk-item{
+  display:flex;align-items:flex-start;gap:12px;padding:13px 14px;
+  border-radius:14px;border:1.5px solid var(--s200);background:white;margin-bottom:8px;
+}
+.risk-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.dot-critical{background:var(--red);  box-shadow:0 0 6px rgba(232,52,28,0.5);}
+.dot-high    {background:var(--amber);box-shadow:0 0 6px rgba(245,166,35,0.5);}
+.dot-medium  {background:#EAB308;}
+.dot-low     {background:var(--green);}
+.risk-body{flex:1;}
+.risk-title{font-size:13px;font-weight:700;color:var(--s900);margin-bottom:3px;}
+.risk-desc {font-size:11px;color:var(--s500);line-height:1.5;}
+
+/* ═══════════════════════════════════════
+   QUICK NAV GRID
+═══════════════════════════════════════ */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.quick-btn{
+  background:white;border:1.5px solid var(--s200);border-radius:18px;
+  padding:16px 12px;display:flex;flex-direction:column;align-items:center;
+  gap:8px;cursor:pointer;transition:all .2s;box-shadow:var(--shadow-card);
+}
+.quick-btn:hover{border-color:var(--navy);transform:translateY(-2px);box-shadow:0 6px 20px rgba(11,31,69,0.1);}
+.quick-icon{padding:10px;border-radius:12px;}
+.quick-label{font-family:var(--font-mono);font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--s700);}
+
+/* ═══════════════════════════════════════
+   MATERIAL CHANGE CARDS
+═══════════════════════════════════════ */
+.mc-card{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 16px;border-radius:14px;border:1.5px solid var(--s200);
+  background:white;margin-bottom:10px;cursor:pointer;transition:all .2s;
+}
+.mc-card:hover{border-color:var(--navy);background:var(--s50);}
+.mc-card-left{display:flex;align-items:center;gap:12px;}
+.mc-emoji{font-size:22px;}
+.mc-title{font-size:13px;font-weight:700;color:var(--s900);}
+.mc-desc {font-size:11px;color:var(--s500);margin-top:2px;line-height:1.4;}
+
+/* ═══════════════════════════════════════
+   DEADLINE RESULT
+═══════════════════════════════════════ */
+.deadline-result{border-radius:18px;padding:20px;margin-top:14px;display:none;}
+.deadline-result.show{display:block;animation:fadeUp .3s ease both;}
+.deadline-big{font-family:var(--font-serif);font-size:34px;line-height:1;color:var(--navy);margin-bottom:4px;}
+.deadline-mechanism{font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--s400);margin-bottom:14px;}
+.deadline-status{font-size:12px;line-height:1.6;}
+.deadline-how{margin-top:14px;padding-top:14px;font-size:11px;line-height:1.6;color:var(--s500);}
+.deadline-how strong{color:var(--s700);}
+
+/* ═══════════════════════════════════════
+   EVIDENCE TABLE
+═══════════════════════════════════════ */
+.ev-table{width:100%;border-collapse:collapse;font-size:12px;}
+.ev-table th{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--s400);padding:8px 10px;
+  text-align:left;border-bottom:1.5px solid var(--s200);
+}
+.ev-table td{padding:11px 10px;color:var(--s700);border-bottom:1px solid var(--s100);vertical-align:top;}
+.ev-table tr:last-child td{border-bottom:none;}
+.ev-table tr:hover td{background:var(--s50);}
+
+.del-btn{
+  background:none;border:1px solid rgba(232,52,28,0.3);color:var(--red);
+  padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer;
+  transition:all .15s;font-family:var(--font-mono);
+}
+.del-btn:hover{background:var(--red-light);}
+
+/* ═══════════════════════════════════════
+   BOTTOM NAV
+═══════════════════════════════════════ */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;
+  background:rgba(255,255,255,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--s200);
+  display:flex;justify-content:space-around;align-items:center;
+  padding:10px 8px max(10px, env(safe-area-inset-bottom));
+  z-index:100;box-shadow:0 -4px 20px rgba(11,31,69,0.08);
+}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 10px;border-radius:12px;border:none;background:none;
+  cursor:pointer;transition:all .2s;color:var(--s400);
+}
+.nav-item.active{color:var(--navy);background:rgba(11,31,69,0.07);}
+.nav-label{font-family:var(--font-mono);font-size:8px;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+
+/* ═══════════════════════════════════════
+   FOOTER CREDIT
+═══════════════════════════════════════ */
+.built-by{
+  text-align:center;padding:10px 0 4px;
+  font-family:var(--font-mono);font-size:9px;
+  color:var(--s400);letter-spacing:1px;
+}
+.built-by a{color:var(--navy);text-decoration:none;font-weight:600;}
+.built-by a:hover{text-decoration:underline;}
+
+/* ═══════════════════════════════════════
+   MISC
+═══════════════════════════════════════ */
+.divider{height:1px;background:var(--s100);margin:14px 0;}
+.empty-state{text-align:center;padding:32px 20px;color:var(--s400);}
+.empty-state svg{margin:0 auto 10px;opacity:.35;display:block;}
+.empty-state p{font-size:13px;font-style:italic;line-height:1.6;}
+.evidence-summary-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px;background:var(--s50);border-radius:10px;margin-bottom:6px;
+}
+.ev-sum-label{font-size:12px;color:var(--s700);}
+.ev-sum-count{font-family:var(--font-serif);font-size:26px;color:var(--navy);line-height:1;}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <div class="scroll-area">
+
+    <!-- ══════════════════ DASHBOARD ══════════════════ -->
+    <div id="panel-home" class="panel active">
+      <div class="hero">
+        <div class="hero-inner">
+          <div>
+            <p class="hero-eyebrow">ASQA 2025 · RTO Governance</p>
+            <h1 class="hero-title">Governance<br>Suite</h1>
+            <p class="hero-sub">Fit &amp; Proper Person · Material Change</p>
+          </div>
+          <div class="hero-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B1F45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-pad">
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="stat-pill"><span class="stat-num">5</span><span class="stat-lbl">FPPR Triggers</span></div>
+          <div class="stat-pill"><span class="stat-num">10</span><span class="stat-lbl">Biz Day Window</span></div>
+          <div class="stat-pill"><span class="stat-num">4</span><span class="stat-lbl">Change Categories</span></div>
+        </div>
+
+        <!-- Score card -->
+        <div class="card card-lime">
+          <span class="label-mono">Self-Assurance Score</span>
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:6px;">
+            <div style="display:flex;align-items:baseline;gap:10px;">
+              <span class="score-big" id="dash-pct" style="color:var(--navy);">0%</span>
+              <span class="chip chip-navy" id="dash-label">Needs Work</span>
+            </div>
+            <div style="text-align:right;">
+              <span class="mono" style="font-size:22px;font-weight:600;color:var(--navy);" id="dash-num">0</span>
+              <span class="mono" style="font-size:13px;color:var(--s400);" id="dash-total">/7</span>
+            </div>
+          </div>
+          <div class="prog-track"><div class="prog-fill" id="dash-bar" style="width:0%"></div></div>
+        </div>
+
+        <!-- Maturity checklist -->
+        <div class="card">
+          <p class="section-title" style="font-size:18px;">Maturity Checklist</p>
+          <p class="section-sub">Tap to mark as implemented</p>
+          <div id="dash-checklist"></div>
+        </div>
+
+        <!-- Quick nav -->
+        <p class="section-title" style="font-size:16px;margin-bottom:10px;">Quick Access</p>
+        <div class="quick-grid">
+          <button class="quick-btn" onclick="goTo('triggers')">
+            <div class="quick-icon" style="background:rgba(11,31,69,0.08);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B1F45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+            </div>
+            <span class="quick-label">FPPR Triggers</span>
+          </button>
+          <button class="quick-btn" onclick="goTo('material')">
+            <div class="quick-icon" style="background:#FEF4E3;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <span class="quick-label">Material Change</span>
+          </button>
+          <button class="quick-btn" onclick="goTo('risk')">
+            <div class="quick-icon" style="background:#FEE9E5;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8341C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <span class="quick-label">Risk Register</span>
+          </button>
+          <button class="quick-btn" onclick="goTo('evidence')">
+            <div class="quick-icon" style="background:#E3F9ED;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1DB560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            </div>
+            <span class="quick-label">Evidence Vault</span>
+          </button>
+        </div>
+
+        <div class="built-by">Built by <a href="https://linkedin.com/in/tiarachoi" target="_blank">Tiara Choi</a> · ASQA Standards for RTOs 2025</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ FPPR TRIGGERS ══════════════════ -->
+    <div id="panel-triggers" class="panel">
+      <div class="hero">
+        <button class="hero-back" onclick="goTo('home')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <div class="hero-inner">
+          <div>
+            <p class="hero-eyebrow">ASQA 2025 · Obligations</p>
+            <h1 class="hero-title">FPPR<br>Trigger Points</h1>
+            <p class="hero-sub">5 events that mandate a declaration</p>
+          </div>
+          <div class="hero-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B1F45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-pad">
+        <div class="alert alert-danger">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span><strong>Ongoing obligation</strong> — not a one-off at registration. ASQA may require a declaration from any individual at any time.</span>
+        </div>
+
+        <div id="trigger-list"></div>
+
+        <!-- ASQA Principle -->
+        <div class="card card-navy">
+          <span class="label-mono" style="color:var(--lime);">ASQA Principle</span>
+          <p class="serif" style="font-size:17px;color:white;font-style:italic;line-height:1.45;margin-bottom:10px;">"Disclosure does not imply unsuitability — it enables ASQA to assess risk in context."</p>
+          <p style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.55;">Withholding information destroys regulatory confidence and constitutes non-compliance under the 2025 Standards. Early voluntary disclosure = positive governance signal.</p>
+        </div>
+
+        <!-- Disclosure items -->
+        <div class="card">
+          <p style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;">What Must Be Disclosed?</p>
+          <div id="disclosure-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ MATERIAL CHANGE ══════════════════ -->
+    <div id="panel-material" class="panel">
+      <div class="hero">
+        <button class="hero-back" onclick="goTo('home')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <div class="hero-inner">
+          <div>
+            <p class="hero-eyebrow">ASQA 2025 · Notification</p>
+            <h1 class="hero-title">Material<br>Change</h1>
+            <p class="hero-sub">Obligations &amp; timelines</p>
+          </div>
+          <div class="hero-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B1F45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-pad">
+        <div class="alert alert-info">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>ASQA places significant weight on <strong>proactive, early, voluntary disclosure</strong>. Delayed or selective notification is non-compliant regardless of intent.</span>
+        </div>
+
+        <!-- Step 0: category list -->
+        <div id="mc-step0">
+          <p class="section-title">What type of change?</p>
+          <p class="section-sub">Select to see notification requirements</p>
+          <div id="mc-category-list"></div>
+
+          <div class="card card-red" style="margin-top:6px;">
+            <p style="font-weight:700;font-size:13px;color:var(--red);margin-bottom:8px;">⛔ Non-Compliance Consequences</p>
+            <p style="font-size:11px;color:#6B1B0E;line-height:1.55;margin-bottom:5px;">• Found non-compliant with 2025 Standards — formal regulatory finding on record.</p>
+            <p style="font-size:11px;color:#6B1B0E;line-height:1.55;margin-bottom:5px;">• Further regulatory action by ASQA — conditions, suspension, or cancellation.</p>
+            <p style="font-size:11px;color:#6B1B0E;line-height:1.55;">• Selective, incomplete, or reactive notification is non-compliant even without intent to conceal.</p>
+          </div>
+        </div>
+
+        <!-- Step 1: result -->
+        <div id="mc-step1" style="display:none;">
+          <div class="card card-lime" id="mc-result-card"></div>
+          <button class="btn btn-secondary" onclick="mcReset()" style="margin-top:6px;">← Assess Another Event</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ DEADLINE CALC ══════════════════ -->
+    <div id="panel-calc" class="panel">
+      <div class="hero">
+        <button class="hero-back" onclick="goTo('home')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <div class="hero-inner">
+          <div>
+            <p class="hero-eyebrow">ASQA 2025 · Calculator</p>
+            <h1 class="hero-title">Deadline<br>Calculator</h1>
+            <p class="hero-sub">Know your exact ASQA window</p>
+          </div>
+          <div class="hero-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B1F45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-pad">
+        <div class="card">
+          <p class="section-title" style="font-size:18px;">Calculate Your Deadline</p>
+          <p class="section-sub">Based on ASQA Statement of Regulatory Expectations v1.0</p>
+
+          <div class="field-group">
+            <label class="label-mono">Event / Change Type</label>
+            <select class="field-select" id="calc-type" onchange="calcReset()">
+              <option value="">— Select event type —</option>
+              <option value="compliance-event">Event significantly affecting compliance capacity</option>
+              <option value="ownership">Prospective ownership change (known in advance)</option>
+              <option value="governing-pre">Governing person change (known in advance)</option>
+              <option value="governing-post">Governing person change (unexpected)</option>
+              <option value="financial">Emerging financial viability risk</option>
+              <option value="compliance-risk">Compliance risk identified</option>
+              <option value="capacity">Capacity-to-meet-standards event</option>
+            </select>
+          </div>
+
+          <div class="field-group" style="margin-bottom:18px;">
+            <label class="label-mono">Date Event Occurred / Was First Identified</label>
+            <input type="date" class="field-input" id="calc-date" onchange="calcReset()">
+          </div>
+
+          <button class="btn btn-primary" onclick="calculateDeadline()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Calculate Deadline
+          </button>
+        </div>
+
+        <div class="deadline-result" id="calc-result">
+          <span class="label-mono" id="calc-mechanism"></span>
+          <div class="deadline-big" id="calc-date-out"></div>
+          <div class="deadline-mechanism" id="calc-mech-label"></div>
+          <div class="deadline-status" id="calc-status"></div>
+          <div class="deadline-how">
+            <strong>How to notify:</strong> Submit via <strong>ASQAnet</strong>. If unsure of category, select <em>'Other significant event'</em>. Contact ASQA Service Delivery: <strong>1300 701 801</strong> or <a href="https://www.asqa.gov.au/contact" target="_blank" style="color:var(--navy);">asqa.gov.au/contact</a>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ RISK REGISTER ══════════════════ -->
+    <div id="panel-risk" class="panel">
+      <div class="hero">
+        <button class="hero-back" onclick="goTo('home')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <div class="hero-inner">
+          <div>
+            <p class="hero-eyebrow">ASQA 2025 · Governance</p>
+            <h1 class="hero-title">Risk<br>Register</h1>
+            <p class="hero-sub">FPPR &amp; Material Change risks</p>
+          </div>
+          <div class="hero-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B1F45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-pad">
+        <div class="alert alert-warning">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Pre-populated from the ASQA Statement of Regulatory Expectations. Update ratings for your organisation's context.</span>
+        </div>
+
+        <div id="risk-list"></div>
+
+        <div class="card card-lime" style="margin-top:6px;">
+          <p style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:12px;">🛡 Key Mitigating Controls</p>
+          <div id="controls-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════ EVIDENCE VAULT ══════════════════ -->
+    <div id="panel-evidence" class="panel">
+      <div class="hero">
+        <button class="hero-back" onclick="goTo('home')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          Back
+        </button>
+        <div class="hero-inner">
+          <div>
+            <p class="hero-eyebrow">ASQA 2025 · Evidence</p>
+            <h1 class="hero-title">Evidence<br>Vault</h1>
+            <p class="hero-sub">Log &amp; track compliance evidence</p>
+          </div>
+          <div class="hero-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B1F45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-pad">
+        <!-- Evidence summary -->
+        <div id="ev-summary" style="display:none;" class="card">
+          <span class="label-mono">Evidence Coverage</span>
+          <div id="ev-summary-inner"></div>
+        </div>
+
+        <!-- Form -->
+        <div class="card">
+          <p class="section-title" style="font-size:18px;">Log Evidence Item</p>
+          <p class="section-sub">Document your compliance evidence record</p>
+
+          <div class="field-row" style="margin-bottom:10px;">
+            <div>
+              <label class="label-mono">Evidence Type</label>
+              <select class="field-select" id="ev-type">
+                <option>FPPR Declaration</option>
+                <option>Material Change Notification</option>
+                <option>Due Diligence Record</option>
+                <option>Decision Log</option>
+                <option>Training Record</option>
+                <option>Third-Party Assessment</option>
+                <option>Policy / SOP</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="label-mono">Date</label>
+              <input type="date" class="field-input" id="ev-date">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="label-mono">Person / Entity *</label>
+            <input type="text" class="field-input" id="ev-person" placeholder="Governing person or partner name">
+          </div>
+
+          <div class="field-row" style="margin-bottom:14px;">
+            <div>
+              <label class="label-mono">Reference / Doc ID</label>
+              <input type="text" class="field-input" id="ev-ref" placeholder="e.g. FPPR-2026-003">
+            </div>
+            <div>
+              <label class="label-mono">Notes</label>
+              <input type="text" class="field-input" id="ev-notes" placeholder="Outcome / description">
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="addEvidence()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Log Evidence Item
+          </button>
+        </div>
+
+        <!-- Register -->
+        <div class="card" id="ev-register" style="padding:16px 12px;">
+          <p style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:12px;">Evidence Register</p>
+          <div style="overflow-x:auto;" id="ev-table-wrap">
+            <div class="empty-state">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+              <p>No evidence logged yet.<br>Add items using the form above.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /scroll-area -->
+
+  <!-- ══════════════════ BOTTOM NAV ══════════════════ -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="goTo('home')" id="nav-home">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span class="nav-label">Dashboard</span>
+    </button>
+    <button class="nav-item" onclick="goTo('triggers')" id="nav-triggers">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      <span class="nav-label">FPPR</span>
+    </button>
+    <button class="nav-item" onclick="goTo('material')" id="nav-material">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span class="nav-label">Changes</span>
+    </button>
+    <button class="nav-item" onclick="goTo('calc')" id="nav-calc">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span class="nav-label">Deadline</span>
+    </button>
+    <button class="nav-item" onclick="goTo('evidence')" id="nav-evidence">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      <span class="nav-label">Evidence</span>
+    </button>
+  </nav>
+</div><!-- /shell -->
+
+<script>
+/* ════════════════════════════════════════
+   DATA
+════════════════════════════════════════ */
+const MATURITY_QS = [
+  { id:'q1', text:'Do we have formal, recurring FPPR checks — not just at initial registration?', cat:'Governance', critical:true },
+  { id:'q2', text:'Do governing persons clearly understand what must be disclosed under FPPR?', cat:'Awareness', critical:true },
+  { id:'q3', text:'Do staff know what constitutes a material change or significant event?', cat:'Awareness', critical:true },
+  { id:'q4', text:'Are escalation pathways and notification responsibilities documented?', cat:'Processes', critical:true },
+  { id:'q5', text:'Can we show how decisions were assessed, recorded, and acted on?', cat:'Records', critical:true },
+  { id:'q6', text:'Does our FPPR due-diligence extend to all third-party delivery partners?', cat:'Third-Party', critical:false },
+  { id:'q7', text:'Are notification timelines (ASAP / 10 business days) embedded in policy?', cat:'Processes', critical:false },
+];
+
+const TRIGGERS = [
+  { id:'A', title:'Initial Registration', tag:'Mandatory', desc:'All governing persons must lodge before registration is granted. Establishes baseline fitness and propriety.' },
+  { id:'B', title:'Renewal of Registration', tag:'Mandatory', desc:'Prior declarations do not carry over. Status must be freshly attested at each renewal cycle.' },
+  { id:'C', title:'Changes to Governing Persons', tag:'Event-Driven', desc:'New appointments, resignations, role changes — each triggers a new declaration obligation.' },
+  { id:'D', title:'Issues Arising During Appointment', tag:'Ongoing', desc:'Legal, financial, regulatory or governance matters — including those arising overseas — during a governing person\'s tenure.' },
+  { id:'E', title:'ASQA Demand (Any Time)', tag:'At-Will', desc:'ASQA may require a declaration from any RTO or individual at any time. Refusal = non-compliance.' },
+];
+
+const DISCLOSURES = [
+  'Legal or criminal matters — past or current — involving a governing person',
+  'Financial matters: insolvency, bankruptcy, administration of any entity they controlled',
+  'Governance failures: board removal, disqualification, disciplinary action at any organisation',
+  'Regulatory findings or investigations — any sector, any jurisdiction including overseas',
+  'Third-party delivery arrangement changes affecting fitness or suitability',
+];
+
+const MC_CATEGORIES = [
+  { key:'ownership',  emoji:'🏛', title:'Ownership Change',          desc:'Changes to RTO ownership or control structures.',                                           deadline:'ASAP — Before change takes effect', type:'pre' },
+  { key:'governance', emoji:'👤', title:'Governing Person Change',   desc:'Appointments, resignations, role changes — governing persons.',                             deadline:'ASAP before, or 10 Business Days if unexpected', type:'mixed' },
+  { key:'finance',    emoji:'💰', title:'Financial Viability Risk',  desc:'Risk of administration, liquidation, insolvency, or significant financial stress.',         deadline:'10 Business Days from identification', type:'post' },
+  { key:'compliance', emoji:'⚖️', title:'Compliance Risk',           desc:'Emerging compliance failures, regulatory findings, systemic non-compliance.',               deadline:'10 Business Days from identification', type:'post' },
+  { key:'capacity',   emoji:'🔗', title:'Capacity to Meet Standards',desc:'Any event — incl. through third-party arrangements — affecting ability to meet the 2025 Standards.', deadline:'10 Business Days from identification', type:'post' },
+];
+
+const RISKS = [
+  { level:'critical', title:'Fitness issue not disclosed to ASQA',         desc:'Legal, regulatory or financial matter involving a governing person not reported — incl. overseas.', tag:'Critical' },
+  { level:'critical', title:'Material change notification delayed/withheld',desc:'Failure to notify within 10 business days or ASAP before change takes effect.',                    tag:'Critical' },
+  { level:'high',     title:'Governing persons lack FPPR awareness',        desc:'Board/exec cannot articulate disclosure obligations — no training records as evidence.',            tag:'High' },
+  { level:'high',     title:'Undocumented disclosure decision-making',       desc:'Decisions on whether a matter is disclosable made but not recorded — creates audit gap.',          tag:'High' },
+  { level:'high',     title:'Third-party FPPR oversight gap',               desc:'FPPR expectation extends to third-party delivery. Gaps = RTO primary liability.',                  tag:'High' },
+  { level:'medium',   title:'Selective or incomplete disclosure',            desc:'Assumptions of immateriality or partial withholding undermine regulatory confidence.',             tag:'Medium' },
+  { level:'low',      title:'Uncertainty about event category',             desc:"Unsure if an event is notifiable. Use 'Other significant event' in ASQAnet and engage ASQA.",      tag:'Low' },
+];
+
+const CONTROLS = [
+  'Annual FPPR awareness program for all governing persons — with attendance records',
+  'Documented escalation SOP: who identifies → who assesses → who notifies ASQA',
+  'Decision log for all disclosure assessments — even those assessed as non-disclosable',
+  'Material change trigger checklist embedded in governance calendar reviews',
+  'Third-party partner agreements include FPPR obligations and compliance warranties',
+];
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let scores = {};
+let evidenceItems = [];
+let evidenceCounter = 1;
+
+/* ════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════ */
+const PANELS = ['home','triggers','material','calc','risk','evidence'];
+
+function goTo(id) {
+  PANELS.forEach(p => {
+    document.getElementById('panel-' + p).classList.toggle('active', p === id);
+    const nav = document.getElementById('nav-' + p);
+    if (nav) nav.classList.toggle('active', p === id);
+  });
+  document.querySelector('.scroll-area').scrollTop = 0;
+}
+
+/* ════════════════════════════════════════
+   RENDER DASHBOARD
+════════════════════════════════════════ */
+function renderDashChecklist() {
+  const el = document.getElementById('dash-checklist');
+  el.innerHTML = MATURITY_QS.map(q => `
+    <div class="checklist-item ${scores[q.id] ? 'done' : ''}" onclick="toggleScore('${q.id}')">
+      <div class="check-box-ui">${scores[q.id] ? '✓' : ''}</div>
+      <div class="item-text">
+        <div class="item-title">${q.text}</div>
+        <div class="item-tags">
+          <span class="chip chip-navy">${q.cat}</span>
+          ${q.critical ? '<span class="chip chip-red">Critical</span>' : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateDashScore() {
+  const done = Object.values(scores).filter(Boolean).length;
+  const total = MATURITY_QS.length;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  const colour = pct >= 80 ? 'var(--green)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
+  const label  = pct >= 80 ? 'Strong' : pct >= 50 ? 'Developing' : 'Needs Work';
+  const chipCls= pct >= 80 ? 'chip-green' : pct >= 50 ? 'chip-amber' : 'chip-red';
+
+  document.getElementById('dash-pct').textContent = pct + '%';
+  document.getElementById('dash-pct').style.color = colour;
+  document.getElementById('dash-bar').style.width = pct + '%';
+  document.getElementById('dash-num').textContent = done;
+  document.getElementById('dash-total').textContent = '/' + total;
+
+  const lbl = document.getElementById('dash-label');
+  lbl.textContent = label;
+  lbl.className = 'chip ' + chipCls;
+}
+
+function toggleScore(id) {
+  scores[id] = !scores[id];
+  updateDashScore();
+  renderDashChecklist();
+}
+
+/* ════════════════════════════════════════
+   RENDER TRIGGERS
+════════════════════════════════════════ */
+function renderTriggers() {
+  document.getElementById('trigger-list').innerHTML = TRIGGERS.map((t, i) => `
+    <div class="tl-item" onclick="toggleTrigger(${i})" id="tl-${i}">
+      <span class="tl-letter">${t.id}</span>
+      <div class="tl-content">
+        <div class="tl-title">${t.title} <span class="chip chip-navy" style="margin-left:4px;">${t.tag}</span></div>
+        <div class="tl-desc">${t.desc}</div>
+      </div>
+      <svg class="tl-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  `).join('');
+
+  document.getElementById('disclosure-list').innerHTML = DISCLOSURES.map(d => `
+    <div style="display:flex;gap:10px;padding:10px 12px;background:var(--s50);border-radius:12px;border:1px solid var(--s200);margin-bottom:8px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span style="font-size:12px;font-weight:600;color:var(--s700);line-height:1.45;">${d}</span>
+    </div>
+  `).join('');
+}
+
+function toggleTrigger(i) {
+  document.getElementById('tl-' + i).classList.toggle('open');
+}
+
+/* ════════════════════════════════════════
+   RENDER MATERIAL CHANGE
+════════════════════════════════════════ */
+function renderMCCategories() {
+  document.getElementById('mc-category-list').innerHTML = MC_CATEGORIES.map(c => `
+    <div class="mc-card" onclick="showMCResult('${c.key}')">
+      <div class="mc-card-left">
+        <span class="mc-emoji">${c.emoji}</span>
+        <div>
+          <div class="mc-title">${c.title}</div>
+          <div class="mc-desc">${c.desc}</div>
+        </div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+  `).join('');
+}
+
+function showMCResult(key) {
+  const c = MC_CATEGORIES.find(x => x.key === key);
+  const alertHtml = c.type === 'pre'
+    ? `<div class="alert alert-warning" style="margin-bottom:0;margin-top:12px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span><strong>Pre-notification required.</strong> Notify ASQA before this change takes effect.</span></div>`
+    : `<div class="alert alert-info" style="margin-bottom:0;margin-top:12px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>The clock starts from when the event <strong>occurs or is first identified</strong>. ASQA values early voluntary disclosure.</span></div>`;
+
+  document.getElementById('mc-result-card').innerHTML = `
+    <span style="font-size:30px;display:block;margin-bottom:10px;">${c.emoji}</span>
+    <p class="serif" style="font-size:22px;color:var(--navy);margin-bottom:6px;">${c.title}</p>
+    <p style="font-size:12px;color:var(--s500);line-height:1.6;margin-bottom:14px;">${c.desc}</p>
+    <div style="background:var(--navy);border-radius:14px;padding:14px 16px;margin-bottom:0;">
+      <span class="label-mono" style="color:var(--lime);">ASQA Notification Deadline</span>
+      <p class="serif" style="font-size:22px;color:white;line-height:1.2;">${c.deadline}</p>
+    </div>
+    ${alertHtml}
+  `;
+
+  document.getElementById('mc-step0').style.display = 'none';
+  document.getElementById('mc-step1').style.display = 'block';
+}
+
+function mcReset() {
+  document.getElementById('mc-step0').style.display = 'block';
+  document.getElementById('mc-step1').style.display = 'none';
+}
+
+/* ════════════════════════════════════════
+   DEADLINE CALCULATOR
+════════════════════════════════════════ */
+function addBizDays(dateStr, days) {
+  let d = new Date(dateStr + 'T00:00:00');
+  let added = 0;
+  while (added < days) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() !== 0 && d.getDay() !== 6) added++;
+  }
+  return d;
+}
+
+function fmtDate(d) {
+  return d.toLocaleDateString('en-AU', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+function calcReset() {
+  document.getElementById('calc-result').classList.remove('show');
+}
+
+function calculateDeadline() {
+  const type = document.getElementById('calc-type').value;
+  const dateStr = document.getElementById('calc-date').value;
+  if (!type || !dateStr) { alert('Please select an event type and enter a date.'); return; }
+
+  const isPre = type === 'ownership' || type === 'governing-pre';
+  const deadline = isPre ? new Date(dateStr + 'T00:00:00') : addBizDays(dateStr, 10);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.round((deadline - today) / 86400000);
+
+  let statusHtml, bgColor, borderColor;
+
+  if (isPre) {
+    statusHtml = `<span style="color:#8A5000;font-weight:700;">⚡ Pre-notification required.</span> Notify ASQA BEFORE ${fmtDate(deadline)}. If the change hasn't yet occurred, notify ASQA now.`;
+    bgColor = 'var(--amber-light)'; borderColor = 'rgba(245,166,35,0.4)';
+  } else if (diff < 0) {
+    statusHtml = `<span style="color:var(--red);font-weight:700;">⛔ OVERDUE by ${Math.abs(diff)} day(s).</span> Contact ASQA immediately and provide a full explanation for the delay. Delayed notification may result in regulatory action.`;
+    bgColor = 'var(--red-light)'; borderColor = 'rgba(232,52,28,0.35)';
+  } else if (diff === 0) {
+    statusHtml = `<span style="color:var(--red);font-weight:700;">🔴 DUE TODAY.</span> Submit via ASQAnet immediately. Do not delay.`;
+    bgColor = 'var(--red-light)'; borderColor = 'rgba(232,52,28,0.35)';
+  } else if (diff <= 3) {
+    statusHtml = `<span style="color:#8A5000;font-weight:700;">🟡 ${diff} day(s) remaining.</span> Urgent — prepare and submit to ASQA via ASQAnet now. ASQA values early disclosure.`;
+    bgColor = 'var(--amber-light)'; borderColor = 'rgba(245,166,35,0.4)';
+  } else {
+    statusHtml = `<span style="color:#0A7A3A;font-weight:700;">🟢 ${diff} days remaining.</span> Prepare your notification now. Don't wait — early voluntary disclosure is a positive compliance signal.`;
+    bgColor = 'var(--green-light)'; borderColor = 'rgba(29,181,96,0.35)';
+  }
+
+  const mechanism = isPre ? 'Must Notify Before' : '10 Business Day Deadline';
+  const fullDate = deadline.toLocaleDateString('en-AU', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  const result = document.getElementById('calc-result');
+  result.style.background = bgColor;
+  result.style.border = `1.5px solid ${borderColor}`;
+  result.style.borderRadius = '18px';
+  result.style.padding = '20px';
+
+  document.getElementById('calc-mechanism').textContent = mechanism;
+  document.getElementById('calc-date-out').textContent = fmtDate(deadline).toUpperCase();
+  document.getElementById('calc-mech-label').textContent = fullDate;
+  document.getElementById('calc-status').innerHTML = statusHtml;
+  result.classList.add('show');
+}
+
+/* ════════════════════════════════════════
+   RISK REGISTER
+════════════════════════════════════════ */
+function renderRisk() {
+  const dotClass = { critical:'dot-critical', high:'dot-high', medium:'dot-medium', low:'dot-low' };
+  const chipHtml = {
+    critical: '<span class="chip chip-red">Critical</span>',
+    high:     '<span class="chip chip-amber">High</span>',
+    medium:   '<span class="chip chip-medium">Medium</span>',
+    low:      '<span class="chip chip-green">Low</span>',
+  };
+
+  document.getElementById('risk-list').innerHTML = RISKS.map(r => `
+    <div class="risk-item">
+      <div class="risk-dot ${dotClass[r.level]}"></div>
+      <div class="risk-body">
+        <div class="risk-title">${r.title}</div>
+        <div class="risk-desc">${r.desc}</div>
+      </div>
+      ${chipHtml[r.level]}
+    </div>
+  `).join('');
+
+  document.getElementById('controls-list').innerHTML = CONTROLS.map((c, i) => `
+    <div style="display:flex;gap:10px;padding:10px 12px;background:var(--s50);border-radius:10px;border:1px solid var(--s100);margin-bottom:8px;">
+      <span class="mono" style="color:var(--lime);font-weight:600;font-size:12px;flex-shrink:0;">${String(i+1).padStart(2,'0')}</span>
+      <span style="font-size:12px;color:var(--s600);line-height:1.45;">${c}</span>
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════════════
+   EVIDENCE VAULT
+════════════════════════════════════════ */
+function addEvidence() {
+  const type   = document.getElementById('ev-type').value;
+  const date   = document.getElementById('ev-date').value;
+  const person = document.getElementById('ev-person').value.trim();
+  const ref    = document.getElementById('ev-ref').value.trim();
+  const notes  = document.getElementById('ev-notes').value.trim();
+
+  if (!date || !person) { alert('Date and Person/Entity are required.'); return; }
+
+  evidenceItems.push({ id: evidenceCounter++, type, date, person, ref, notes });
+  document.getElementById('ev-person').value = '';
+  document.getElementById('ev-ref').value = '';
+  document.getElementById('ev-notes').value = '';
+  renderEvidence();
+}
+
+function deleteEvidence(id) {
+  evidenceItems = evidenceItems.filter(i => i.id !== id);
+  renderEvidence();
+}
+
+function renderEvidence() {
+  // Summary
+  const counts = {};
+  evidenceItems.forEach(i => { counts[i.type] = (counts[i.type]||0)+1; });
+  const sumEl = document.getElementById('ev-summary');
+  const sumInner = document.getElementById('ev-summary-inner');
+
+  if (evidenceItems.length > 0) {
+    sumEl.style.display = 'block';
+    sumInner.innerHTML = Object.entries(counts).map(([type, count]) => `
+      <div class="evidence-summary-row">
+        <span class="ev-sum-label">${type}</span>
+        <span class="ev-sum-count">${count}</span>
+      </div>
+    `).join('') + `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--s200);margin-top:6px;">
+        <span class="label-mono">Total Items</span>
+        <span class="serif" style="font-size:32px;color:var(--green);">${evidenceItems.length}</span>
+      </div>
+    `;
+  } else {
+    sumEl.style.display = 'none';
+  }
+
+  // Table
+  const wrap = document.getElementById('ev-table-wrap');
+  if (evidenceItems.length === 0) {
+    wrap.innerHTML = `<div class="empty-state"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><p>No evidence logged yet.<br>Add items using the form above.</p></div>`;
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table class="ev-table">
+      <thead><tr><th>#</th><th>Type</th><th>Date</th><th>Person</th><th>Ref</th><th></th></tr></thead>
+      <tbody>
+        ${evidenceItems.map((item, i) => `
+          <tr>
+            <td class="mono" style="color:var(--navy);font-weight:600;">${String(i+1).padStart(3,'0')}</td>
+            <td><span class="chip chip-navy" style="white-space:nowrap;">${item.type}</span></td>
+            <td style="white-space:nowrap;">${item.date ? new Date(item.date+'T00:00:00').toLocaleDateString('en-AU') : '—'}</td>
+            <td style="color:var(--s900);font-weight:600;">${item.person}</td>
+            <td class="mono" style="font-size:10px;">${item.ref||'—'}</td>
+            <td><button class="del-btn" onclick="deleteEvidence(${item.id})">✕</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  // Set today's date as default
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('calc-date').value = today;
+  document.getElementById('ev-date').value = today;
+
+  // Render all static content
+  renderDashChecklist();
+  updateDashScore();
+  renderTriggers();
+  renderMCCategories();
+  renderRisk();
+  renderEvidence();
+});
+</script>
+</body>
+</html>
